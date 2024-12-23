@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Local Spots{% endblock %}
+
+{% block content %}
+<!-- Admin page to manage Local Spots -->
+<div class="container mt-4">
+    <h1 class="text-center">Manage Local Spots</h1>
+    <!-- Add New Spot Form -->
+    <div class="mb-4">
+        <h3>Add a New Spot</h3>
+        <form action="{{ url_for('local.add_spot') }}" method="POST" class="row g-3">
+            <!-- Spot Name -->
+            <div class="col-md-6">
+                <label for="spot_name" class="form-label">Spot Name</label>
+                <input type="text" name="spot_name" id="spot_name" class="form-control" placeholder="Enter spot name" required>
+            </div>
+
+            <!-- Type of Spot -->
+            <div class="col-md-6">
+                <label for="spot_type" class="form-label">Type of Spot</label>
+                <select name="spot_type" id="spot_type" class="form-select" required>
+                    <option value="Café">Café</option>
+                    <option value="Pub">Pub</option>
+                    <option value="Market">Market</option>
+                    <option value="Attraction">Attraction</option>
+                    <option value="Museum">Museum</option>
+                </select>
+            </div>
+
+            <!-- Location -->
+            <div class="col-md-12">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="location" id="location" class="form-control" placeholder="Enter address" required>
+            </div>
+
+            <!-- Latitude -->
+            <div class="col-md-6">
+                <label for="latitude" class="form-label">Latitude</label>
+                <input type="number" step="any" name="latitude" id="latitude" class="form-control" placeholder="Enter latitude" required>
+            </div>
+
+            <!-- Longitude -->
+            <div class="col-md-6">
+                <label for="longitude" class="form-label">Longitude</label>
+                <input type="number" step="any" name="longitude" id="longitude" class="form-control" placeholder="Enter longitude" required>
+            </div>
+
+            <!-- Description -->
+            <div class="col-md-12">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" id="description" class="form-control" placeholder="Brief description" required></textarea>
+            </div>
+
+            <!-- Website -->
+            <div class="col-md-12">
+                <label for="website" class="form-label">Website</label>
+                <input type="url" name="website" id="website" class="form-control" placeholder="Enter website URL">
+            </div>
+
+            <!-- Proximity to Cinemas -->
+            <div class="col-md-12">
+                <label for="cinema_proximity" class="form-label">Nearby Cinemas</label>
+                <select name="cinema_proximity" id="cinema_proximity" class="form-select" multiple>
+                    {% for cinema in cinemas %}
+                    <option value="{{ cinema._id }}">{{ cinema.name }}</option>
+                    {% endfor %}
+                </select>
+                <small class="form-text text-muted">Hold Ctrl (Cmd on Mac) to select multiple cinemas.</small>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success">Add/Update Spot</button>
+            </div>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Spots Table -->
+    <h3>Current Local Spots</h3>
+    {% if spots %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Spot Name</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Description</th>
+                <th>Website</th>
+                <th>Proximity to Cinemas</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for spot in spots %}
+            <tr>
+                <td>{{ spot.name }}</td>
+                <td>{{ spot.type }}</td>
+                <td>{{ spot.location }}</td>
+                <td>{{ spot.latitude }}</td>
+                <td>{{ spot.longitude }}</td>
+                <td>{{ spot.description }}</td>
+                <td>
+                    {% if spot.website %}
+                    <a href="{{ spot.website }}" target="_blank">Link</a>
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% for cinema in spot.proximity %}
+                        {{ cinema }},
+                    {% endfor %}
+                </td>
+                <td>
+                    <!-- Edit Button -->
+                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#updateModal{{ loop.index }}">Edit</button>
+                    <div class="modal fade" id="updateModal{{ loop.index }}" tabindex="-1" aria-labelledby="updateModalLabel{{ loop.index }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ url_for('local.update_spot', spot_id=spot._id) }}" method="POST">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateModalLabel{{ loop.index }}">Update Spot</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="spot_name" class="form-label">Spot Name</label>
+                                            <input type="text" name="spot_name" class="form-control" value="{{ spot.name }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="spot_type" class="form-label">Type of Spot</label>
+                                            <input type="text" name="spot_type" class="form-control" value="{{ spot.type }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="location" class="form-label">Location</label>
+                                            <input type="text" name="location" class="form-control" value="{{ spot.location }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="latitude" class="form-label">Latitude</label>
+                                            <input type="text" name="latitude" class="form-control" value="{{ spot.latitude }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="longitude" class="form-label">Longitude</label>
+                                            <input type="text" name="longitude" class="form-control" value="{{ spot.longitude }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea name="description" class="form-control">{{ spot.description }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="website" class="form-label">Website</label>
+                                            <input type="url" name="website" class="form-control" value="{{ spot.website }}">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete Button -->
+                    <form action="{{ url_for('local.delete_spot', spot_id=spot._id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this spot?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No local spots available. Add a spot to get started.</p>
+    {% endif %}
+</div>
+{% endblock %}

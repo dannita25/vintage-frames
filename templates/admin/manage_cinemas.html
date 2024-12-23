@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Cinemas{% endblock %}
+
+{% block content %}
+<!-- Admin page to manage cinemas -->
+<div class="container mt-4">
+    <!-- Cinema Management Section -->
+    <div class="mb-4">
+        <h3>Add a New Cinema</h3>
+
+        <div class="d-flex gap-2 mb-4">
+            <!-- Buttons to switch between sections -->
+            <a href="{{ url_for('cinema.manage_screenings') }}" class="btn btn-info">Screenings</a>
+            <a href="{{ url_for('cinema.manage_omdb') }}" class="btn btn-primary">Movies</a>
+            <a href="{{ url_for('cinema.manage_cinemas') }}" class="btn btn-secondary">Cinemas</a>            
+        </div>
+
+        <form action="{{ url_for('cinema.manage_cinemas') }}" method="POST" class="row g-3">
+            <div class="col-md-6">
+                <label for="cinema_name" class="form-label">Cinema Name</label>
+                <input type="text" name="name" id="cinema_name" class="form-control" placeholder="Enter cinema name" required>
+            </div>
+            <div class="col-md-6">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" name="description" id="description" class="form-control" placeholder="Enter cinema description" required>
+            </div>
+            <div class="col-md-6">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="location" id="location" class="form-control" placeholder="Enter cinema location" required>
+            </div>
+            <div class="col-md-3">
+                <label for="latitude" class="form-label">Latitude</label>
+                <input type="text" name="latitude" id="latitude" class="form-control" placeholder="Enter latitude" required>
+            </div>
+            <div class="col-md-3">
+                <label for="longitude" class="form-label">Longitude</label>
+                <input type="text" name="longitude" id="longitude" class="form-control" placeholder="Enter longitude" required>
+            </div>
+            <div class="col-md-6">
+                <label for="website" class="form-label">Website</label>
+                <input type="url" name="website" id="website" class="form-control" placeholder="Enter cinema website" required>
+            </div>
+            <div class="col-md-6">
+                <label for="special_notes" class="form-label">Special Notes</label>
+                <input type="text" name="special_notes" id="special_notes" class="form-control" placeholder="Optional notes" required>
+            </div>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success">Add Cinema</button>
+            </div>
+        </form>
+    </div>
+
+    <hr class="my-4">
+
+<!-- Current Cinemas Table -->
+<div class="mt-5">
+    <h3>Current Cinemas</h3>
+    {% if cinemas %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Website</th>
+                <th>Special Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cinema in cinemas %}
+            <tr>
+                <td>{{ cinema.name }}</td>
+                <td>{{ cinema.description or "N/A" }}</td>
+                <td>{{ cinema.location }}</td>
+                <td>{{ cinema.latitude }}</td>
+                <td>{{ cinema.longitude }}</td>
+                <td><a href="{{ cinema.website }}" target="_blank">{{ cinema.website }}</a></td>
+                <td>{{ cinema.special_notes or "N/A" }}</td>
+                <td>
+                    <!-- Update Button -->
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#updateCinemaModal{{ loop.index }}">
+                        Update
+                    </button>
+
+                        <!-- Update Modal -->
+                        <div class="modal fade" id="updateCinemaModal{{ loop.index }}" tabindex="-1" aria-labelledby="updateCinemaModalLabel{{ loop.index }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="{{ url_for('cinema.update_cinema', name=cinema.name) }}" method="POST">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="updateCinemaModalLabel{{ loop.index }}">Update Cinema</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Input Fields -->
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label">Cinema Name</label>
+                                                <input type="text" name="name" class="form-control" value="{{ cinema.name }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Description</label>
+                                                <input type="text" name="description" class="form-control" value="{{ cinema.description }}" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="location" class="form-label">Location</label>
+                                                <input type="text" name="location" class="form-control" value="{{ cinema.location }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="latitude" class="form-label">Latitude</label>
+                                                <input type="text" name="latitude" class="form-control" value="{{ cinema.latitude }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="longitude" class="form-label">Longitude</label>
+                                                <input type="text" name="longitude" class="form-control" value="{{ cinema.longitude }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="website" class="form-label">Website</label>
+                                                <input type="url" name="website" class="form-control" value="{{ cinema.website }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="special_notes" class="form-label">Special Notes</label>
+                                                <input type="text" name="special_notes" class="form-control" value="{{ cinema.special_notes }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Delete Button -->
+                    <form action="{{ url_for('cinema.delete_cinema', name=cinema.name) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</button>
+                    </form>     
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No cinemas available. Add a cinema to get started.</p>
+    {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+

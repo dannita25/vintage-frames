@@ -1,0 +1,45 @@
+<!-- Navigation map entrances for the website -->
+<header class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') if session.get('role') == 'admin' else url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Vintage Frames Logo" class="logo">
+            <span class="ms-2 website-name">Vintage Frames</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if session.get('role') != 'admin' %}
+                <!-- Publicly Accessible Pages -->
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('user_routes.screenings') }}">Screenings</a></li>                
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('user_routes.local_spots') }}">Local Spots</a></li>
+                {% endif %}
+
+                {% if session.get('role') == 'admin' %}
+                    <!-- Admin Links -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">Manage Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('cinema.manage_screenings') }}">Manage Screenings</a></li> 
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('local.manage_spots') }}">Manage Spots</a></li>                 
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% elif session.get('username') %}
+                    <!-- User-Specific Links -->                                        
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('user_routes.watchlist') }}">My Watchlist</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('user_routes.profile_settings') }}">My Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                    <!-- Guest Links -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+                {% endif %}                          
+            </ul>
+
+            <form class="d-flex me-3">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-light" type="submit">Search</button>
+            </form> 
+        </div>
+    </div>
+</header>
+

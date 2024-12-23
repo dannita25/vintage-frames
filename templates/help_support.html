@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+Help & Support
+{% endblock %}
+
+{% block content %}
+<!-- Help and Suport page for user -->
+<div class="container my-5">
+    <h2>Help & Support</h2>
+    <p>If you have any questions or need assistance, we’re here to help. Below, you'll find some common support topics and ways to get in touch with us.</p>
+    
+    <h4>Contact Us</h4>
+    <p>Email: <a href="mailto:edinburghvintageframes@gmail.com">edinburghvintageframes@gmail.com</a></p>
+    <p>Phone: +1 (123) 456-7890</p>
+    
+    <h4>Common Support Topics</h4>
+    <ul>
+        <li><a href="#">Resetting Your Password</a></li>
+        <li><a href="#">Updating Profile Information</a></li>
+        <li><a href="#">Understanding Movie Ratings</a></li>
+        <li><a href="#">Submitting a Review</a></li>
+    </ul>
+    
+    <p>For further inquiries or detailed support, please visit our <a href="{{ url_for('faq') }}">FAQ page</a> or reach out directly via our contact information above.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,183 @@
+:root {
+    --primary-color: #6b4226; /* Brown */
+    --secondary-color: #f4e285; /* Mustard Yellow */
+    --accent-color: #d7a976; /* Beige */
+    --background-color: #f9f4ef; /* Off-white */
+    --text-color: #332a22; /* Dark Brown */
+}
+
+body {
+    background: url('https://img.pikbest.com/wp/202343/old-vintage-paper-texture-inspired-ideal-for-backgrounds-scrapbooking-and-web-design_9981035.jpg!sw800') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff; /* White text for contrast */
+    font-family: 'Poppins', sans-serif;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo {
+    width: 30px; 
+    height: auto;
+}
+
+/* Header (Navigation Bar) Styling */
+.navbar {
+    background-color: #5E1F26; /* Wine red color */
+}
+
+/* Add hover effect for nav links not working fix*/
+.navbar .nav-link:hover {
+    color: #e9b91e; /* Hover colour */
+}
+
+/* Footer Styling */
+footer {
+    background-color: #5E1F26; /* Matching wine red colour */
+    color: #ffffff;
+    border-top: 2px solid #5B2026; /* Slightly darker wine red for the border */
+    height: var(--header-height);
+}
+
+footer a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #e9b91e; 
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    footer p {
+        font-size: 0.9rem;
+    }
+}
+
+.hero {
+    position: relative;
+    height: 100vh; /* Full screen height */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1; /* Push the video behind content */
+    background: #000; /* Black background during load */
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the screen */
+    pointer-events: none; /* Prevents interaction with the video */
+}
+
+.overlay {
+    position: relative;
+    z-index: 1; /* Ensure content is above the video */
+}
+
+.btn {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: #6a1b9a; /* Example colour */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #4a0072; /* Darker hover colour */
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+.masonry-section {
+    padding: 50px 20px;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    color: #6b4226;
+    margin-bottom: 30px;
+}
+
+/* local spots*/
+.masonry-grid {
+    column-count: 3; /* Number of columns */
+    column-gap: 20px; /* Space between columns */
+}
+
+.masonry-item {
+    break-inside: avoid; /* Prevent images from breaking awkwardly */
+    margin-bottom: 20px;
+    border: 2px solid #6b4226;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.masonry-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.masonry-item p {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #6b4226;
+}
+
+.section-title-link {
+    text-decoration: none; /* Remove underline */
+    color: inherit;        /* Use heading's default color */
+}
+
+.section-title-link:hover {
+    color: #27190f; /* Change color on hover */
+}
+
+.btn-primary {
+    font-size: 0.9rem; /* Slightly smaller font for the button */
+}

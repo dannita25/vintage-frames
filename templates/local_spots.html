@@ -1,0 +1,46 @@
+<!-- Local Vintage Spots Page -->
+{% extends "base.html" %}
+
+{% block title %}
+Local Vintage Spots
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Explore Local Vintage Spots</h1>
+    
+    <div class="row">
+        <!-- List View -->
+        <div class="col-md-6">
+            <h4 class="mb-3">List of Vintage Spots</h4>
+            <p>Click on a local spot to display its location on the map. Red markers indicate cinemas in Edinburgh.</p>
+            <div class="list-group" id="spotList">
+                {% for spot in spots %}
+                <a href="#" class="list-group-item list-group-item-action" 
+                   data-lat="{{ spot.latitude }}" 
+                   data-lng="{{ spot.longitude }}" 
+                   onclick="showOnMap(this)">
+                    <h5 class="mb-1">{{ spot.name }}</h5>
+                    <p class="mb-1">{{ spot.description }}</p>
+                    <small>{{ spot.location }}</small>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Map View -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Map View</h4>
+            <div id="mapContainer" style="height: 500px; width: 100%; background-color: #e9ecef;">
+                Map will be displayed here
+            </div> 
+        </div> 
+    </div>
+</div>
+
+<script>
+    window.cinemas = {{ cinemas | tojson }};
+</script>
+
+{% endblock %}
+

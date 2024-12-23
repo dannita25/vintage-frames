@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Reviews
+{% endblock %}
+
+{% block content %}
+<!-- User personal reviews, for future implementation-->
+<div class="container mt-5">
+    <h1 class="text-center">My Reviews</h1>
+    {% if reviews %}
+        <ul class="list-group">
+            {% for review in reviews %}
+                <li class="list-group-item">
+                    <strong>{{ review.movie_title }}</strong> ({{ review.created_at }}):<br>
+                    {{ review.review }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info text-center">You haven't written any reviews yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

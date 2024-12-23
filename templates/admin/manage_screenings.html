@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Screenings{% endblock %}
+
+{% block content %}
+<!-- Admin page to manage screenings -->
+<div class="container mt-4">
+    <h1 class="text-center">Manage Screenings</h1>
+    <div class="d-flex gap-2 mb-4">
+        <!-- Buttons to switch between sections -->
+        <a href="{{ url_for('cinema.manage_screenings') }}" class="btn btn-info">Screenings</a>
+        <a href="{{ url_for('cinema.manage_omdb') }}" class="btn btn-primary">Movies</a>
+        <a href="{{ url_for('cinema.manage_cinemas') }}" class="btn btn-secondary">Cinemas</a>        
+    </div>
+
+    <!-- Add New Screening Form -->
+    <div class="mb-4">
+        <h3>Add a New Screening</h3>
+        <p>Don't forget to save as active for adding a new movie.</p>
+        <form action="{{ url_for('cinema.add_screening') }}" method="POST" class="row g-3">
+
+            <!-- Movie Title Dropdown -->
+            <div class="col-md-6">
+                <label for="movie_title" class="form-label">Movie Title</label>
+                <select name="movie_title" id="movie_title" class="form-select" required>
+                    {% for movie in movies %}
+                    <option value="{{ movie.title }}">{{ movie.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Cinema Name Dropdown -->
+            <div class="col-md-6">
+                <label for="cinema_name" class="form-label">Cinema Name</label>
+                <select name="cinema_name" id="cinema_name" class="form-select" required>
+                    {% for cinema in cinemas %}
+                    <option value="{{ cinema.name }}">{{ cinema.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Screening Date-Time -->
+            <div class="col-md-6">
+                <label for="screening_datetime" class="form-label">Screening Date-Time</label>
+                <input type="datetime-local" name="screening_datetime" id="screening_datetime" class="form-control" required>
+            </div>
+
+            <!-- Other Form Fields -->
+            <div class="col-md-6">
+                <label for="screening_format" class="form-label">Screening Format</label>
+                <select name="screening_format" id="screening_format" class="form-select" required>
+                    <option value="2D">2D</option>
+                    <option value="3D">3D</option>
+                    <option value="IMAX">IMAX</option>
+                    <option value="Dolby">Dolby</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-select" required>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-12">
+                <label for="ticket_link" class="form-label">Ticket Link</label>
+                <input type="url" name="ticket_link" id="ticket_link" class="form-control" placeholder="Enter ticket link">
+            </div>
+            <div class="col-md-12">
+                <label for="special_notes" class="form-label">Special Notes</label>
+                <textarea name="special_notes" id="special_notes" class="form-control" placeholder="Optional notes"></textarea>
+            </div>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-success">Add/Update Screening</button>
+            </div>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Screenings Table -->
+    <h3>Current Screenings</h3>
+    {% if screenings %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Movie Title</th>
+                <th>Cinema Name</th>
+                <th>Date-Time</th>
+                <th>Format</th>
+                <th>Status</th>
+                <th>Ticket Link</th>
+                <th>Special Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for screening in screenings %}
+            <tr>
+                <td>{{ screening.movie_title }}</td>
+                <td>{{ screening.cinema_name }}</td>
+                <td>
+                    {% for datetime in screening.screening_datetime %}
+                        <span>{{ datetime | replace(' ', ' / ') }}</span>
+                    {% endfor %}
+                </td>
+                <td>{{ screening.screening_format }}</td>
+                <td>{{ screening.status }}</td>
+                <td>
+                    {% if screening.ticket_link %}
+                        <a href="{{ screening.ticket_link }}" target="_blank">Link</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ screening.special_notes or "N/A" }}</td>
+                <td>
+                    <!-- Inline Form for Quick Updates -->
+                    <form action="{{ url_for('cinema.update_screening', movie_title=screening.movie_title, cinema_name=screening.cinema_name) }}" method="POST" class="d-inline">                
+                        <select name="status" class="form-select form-select-sm w-auto">
+                            <option value="active" {% if screening.status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="inactive" {% if screening.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-warning">Save</button>
+                    </form>
+
+                    <!-- Modal for Advanced Updates -->
+                    <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#updateModal{{ loop.index }}">Edit</button>
+                    <div class="modal fade" id="updateModal{{ loop.index }}" tabindex="-1" aria-labelledby="updateModalLabel{{ loop.index }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ url_for('cinema.update_screening', movie_title=screening.movie_title, cinema_name=screening.cinema_name) }}" method="POST">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateModalLabel{{ loop.index }}">Update Screening</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="screening_datetime" class="form-label">Screening Date and Time</label>
+                                            <input type="datetime-local" name="screening_datetime" class="form-control" 
+                                                   value="{{ screening.screening_datetime }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="ticket_link" class="form-label">Ticket Link</label>
+                                            <input type="url" name="ticket_link" class="form-control" value="{{ screening.ticket_link }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="special_notes" class="form-label">Special Notes</label>
+                                            <textarea name="special_notes" class="form-control">{{ screening.special_notes }}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete Button -->
+                    <form action="{{ url_for('cinema.delete_screening', movie_title=screening.movie_title, cinema_name=screening.cinema_name) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this screening?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No screenings available. Add a screening to get started.</p>
+    {% endif %}
+</div>
+{% endblock %}

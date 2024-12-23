@@ -1,0 +1,116 @@
+<!--Main page of website-->
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block head %}
+<meta name="description" content="Vintage Frames - Your source for timeless cinema reviews and discussions.">
+<meta name="keywords" content="Vintage Frames, cinema reviews, movie screenings, recommendations">
+<meta name="author" content="Vintage Frames Team">
+{% endblock %}
+
+{% block content %}
+
+<div class="hero">
+    <div class="video-container">
+        <iframe
+            class="background-video"
+            src="https://www.youtube.com/embed/EmLdkQaULFQ?autoplay=1&mute=1&loop=1&playlist=EmLdkQaULFQ"
+            title="Vintage Frames"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            allowfullscreen
+        ></iframe>
+    </div>
+    <div class="overlay">
+        <h1>Welcome to Vintage Frames</h1>
+        <p>Your hub to read about vintage cinema screenings, spots, and reviews in Edinburgh.</p>
+    </div>
+</div>
+</br>
+<!-- Section for Featured Films -->
+<section id="featured-films" class="carousel-section">
+    <div class="container">
+        <a href="{{ url_for('user_routes.screenings') }}" class="section-title-link">
+            <h2 class="section-title">Featured Films >>></h2>
+        </a>
+        <div id="filmCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Loop through movies in batches of 3 -->
+                {% for chunk in movies|batch(3) %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="row">
+                        {% for movie in chunk %}
+                        <div class="col-md-4">
+                            <div class="movie-card">
+                                <img src="{{ movie.poster or url_for('static', filename='images/placeholder.png') }}" class="card-img-top" alt="{{ movie.title }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ movie.title }}</h5>
+                                    <p class="card-text">{{ movie.plot }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Carousel Controls -->
+            <a class="carousel-control-prev" href="#filmCarousel" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#filmCarousel" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Section for Local Spots -->
+<section id="local-spots" class="masonry-section">
+    <a href="{{ url_for('user_routes.local_spots') }}" class="section-title-link">
+        <h2 class="section-title">Explore Local Spots >>></h2>
+    </a>
+    <div class="container">    
+        <div class="masonry-grid">
+            <div class="masonry-item">
+                <img src="https://images.the500hiddensecrets.com/2019-06/sh_armstrongsclothing-hs2018-01673.jpg?auto=format&fit=max&h=1080&ixlib=php-1.1.0&q=65&w=1920&s=ed2fdcf34a06860b86dbfa249f9ed295" alt="Vintage Theater 1">
+                <p>Vintage Shops</p>
+            </div> 
+            <div class="masonry-item">
+                <img src="https://everythinglooksrosie.com/wp-content/uploads/2013/01/img_2633.jpg" alt="Retro Cafe">
+                <p>Retro Cafes</p>
+            </div>
+            <div class="masonry-item">
+                <img src="https://sawdays-production-assets.s3.eu-west-1.amazonaws.com/wp-content/uploads/2023/02/14100001/Best-bookshops-in-Edinburgh-1680x1120.jpg" alt="Classic Hangout Spot">
+                <p>Historic Bookshops</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section for Personalized recommendations, for future development -->
+<section id="personalized-recommendations" class="recommendations-section">
+    <div class="container">
+        <h2 class="section-title">Personalized Recommendations</h2>
+        {% if session.get('username') %}
+            <div class="alert alert-info text-center">
+                Welcome back {{ session['username'] }}! Here some suggestions based on your watchlist and reviews will appear here.
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center">
+                <p>Are you already registered with us?</p>
+                <p>Log in to see personalized movie recommendations!</p>
+                <div class="d-flex justify-content-center mt-2">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary me-2">Yes, Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">No, Register</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

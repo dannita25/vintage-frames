@@ -1,0 +1,24 @@
+<!-- Watchlist page -->
+{% extends "base.html" %}
+
+{% block title %}
+My Watchlist
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">My Watchlist</h1>
+
+    <!-- Watchlist Items -->
+    <div id="watchlist-container" class="row">
+        <!-- Movies will be populated here -->
+    </div>
+
+    <div id="empty-watchlist" class="alert alert-warning text-center">
+        Your watchlist is currently empty. Browse <a href="{{ url_for('user_routes.screenings') }}">screenings</a> to add your favorite films.
+    </div>    
+</div>
+<script>
+    const getWatchlistUrl = "{{ url_for('user_routes.get_watchlist') }}";
+</script>
+{% endblock %}

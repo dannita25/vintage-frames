@@ -1,0 +1,119 @@
+<!-- Screenings page -->
+{% extends "base.html" %}
+
+{% block title %}
+Screenings
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Browse Film Screenings</h1>
+
+    <!-- Filters and Sorting -->
+    <div class="mb-4">
+        <form method="GET" action="{{ url_for('user_routes.screenings') }}" class="d-flex justify-content-between">
+            <!-- Filter by Date -->
+            <div class="form-group">
+                <label for="filterDate">Filter by Date</label>
+                <input type="date" id="filterDate" name="date" class="form-control" value="{{ selected_date or '' }}">
+            </div>
+
+            <!-- Filter by Location -->
+            <div class="form-group">
+                <label for="filterLocation">Filter by Location</label>
+                <select id="filterLocation" name="location" class="form-select">
+                    <option selected value="">Choose Location</option>
+                    {% for location in locations %}
+                        <option value="{{ location }}" {% if selected_location == location %}selected{% endif %}>
+                            {{ location }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Filter by Genre -->
+            <div class="form-group">
+                <label for="filterGenre">Filter by Genre</label>
+                <select id="filterGenre" name="genre" class="form-select">
+                    <option selected value="">Choose Genre</option>
+                    {% for genre in genres %}
+                        <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>
+                            {{ genre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Apply Filters -->
+            <button type="submit" class="btn btn-primary align-self-end">Apply Filters</button>
+
+            <!-- Clear Filters -->
+            <a href="{{ url_for('user_routes.screenings') }}" class="btn btn-secondary align-self-end ms-2">Clear Filters</a>
+        </form>
+    </div>
+
+    <!-- Screening Cards -->
+    <div class="row">
+        {% for screening in screenings %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <!-- Poster -->
+                <img src="{{ screening.movie_details.poster or url_for('static', filename='images/placeholder_film.jpg') }}" 
+                     class="card-img-top" alt="{{ screening.movie_details.title }} Poster">
+                
+                <div class="card-body">
+                    <!-- Movie Title -->
+                    <h5 class="card-title">{{ screening.movie_details.title }}</h5>
+                    
+                    <!-- Cinema Name -->
+                    <p class="card-text"><strong>Cinema:</strong> {{ screening.cinema_name }}</p>
+                    
+                    <!-- Genre -->
+                    <p class="card-text"><strong>Genre:</strong> {{ screening.movie_details.genre }}</p>
+                    
+                    <!-- Date and Time -->
+                    <p class="card-text"><strong>Date & Time:</strong> {{ screening.screening_datetime | replace("T", " at ") }}</p>
+
+                    <!-- Format -->
+                    <p class="card-text"><strong>Format:</strong> {{ screening.screening_format }}</p>
+
+                    <!-- Ticket Link -->
+                    {% if screening.ticket_link %}
+                    <a href="{{ screening.ticket_link }}" class="btn btn-primary" target="_blank">Get Tickets</a>
+                    {% else %}
+                    <button class="btn btn-secondary" disabled>No Ticket Link</button>
+                    {% endif %}
+                    
+                    <button class="btn btn-outline-primary bookmark-btn" 
+                        data-movie-title="{{ screening.movie_details.title }}" 
+                        {% if screening.is_bookmarked %}data-bookmarked="true"{% else %}data-bookmarked="false"{% endif %}
+                    >
+                        {% if screening.is_bookmarked %}
+                        <i class="bi bi-bookmark-fill"></i> Bookmarked
+                        {% else %}
+                        <i class="bi bi-bookmark"></i> Bookmark
+                        {% endif %}
+                    </button>
+                 
+                    <!-- More Info Button -->
+                    <a href="{{ url_for('user_routes.movie_reviews', movie_title=screening.movie_details.title) }}" 
+                    class="btn btn-outline-success mt-3">Reviews</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- No screenings message -->
+    {% if screenings|length == 0 %}
+    <div class="alert alert-warning text-center mt-4">
+        No screenings available. Try adjusting your filters or check back later!
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    const bookmarkUrl = "{{ url_for('user_routes.toggle_bookmark') }}";
+</script>
+{% endblock %}

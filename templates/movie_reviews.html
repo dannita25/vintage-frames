@@ -1,0 +1,45 @@
+<!-- Reviews & Ratings page -->
+{% extends "base.html" %}
+
+{% block title %}
+Reviews & Ratings
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">{{ movie.title }}</h1>
+    <img src="{{ movie.poster or url_for('static', filename='images/placeholder_film.jpg') }}" 
+         class="mx-auto d-block mb-3" alt="{{ movie.title }} Poster">
+    <p><strong>Genre:</strong> {{ movie.genre }}</p>
+    <p><strong>Director:</strong> {{ movie.director }}</p>
+    <p><strong>Actors:</strong> {{ movie.actors }}</p>
+    <p><strong>Plot:</strong> {{ movie.plot }}</p>
+    <p><strong>IMDb Rating:</strong> {{ movie.imdb_rating }}</p>
+
+    <hr>
+
+    <!-- User Reviews -->
+    <h3>User Reviews</h3>
+    {% if reviews %}
+    <ul class="list-group mb-4">
+        {% for review in reviews %}
+        <li class="list-group-item">
+            <strong>{{ review.username }}</strong> ({{ review.created_at }}):<br>
+            {{ review.review }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert alert-warning">No reviews yet. Be the first to leave a review!</div>
+    {% endif %}
+
+    <!-- Add a Review Form, ratings for future development (db field implemented already) -->
+    <h3>Leave a Review</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <textarea name="review" class="form-control" rows="4" placeholder="Write your review here..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+</div>
+{% endblock %}

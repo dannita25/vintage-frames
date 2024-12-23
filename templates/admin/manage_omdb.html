@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Manage OMDb{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+<!-- Fetch OMDb Movie Form -->
+    <div>
+        <h3>Fetch Movie Data</h3>
+
+        <div class="d-flex gap-2 mb-4">
+            <!-- Buttons to switch between sections -->
+            <a href="{{ url_for('cinema.manage_screenings') }}" class="btn btn-info">Screenings</a>
+            <a href="{{ url_for('cinema.manage_omdb') }}" class="btn btn-primary">Movies</a>
+            <a href="{{ url_for('cinema.manage_cinemas') }}" class="btn btn-secondary">Cinemas</a>            
+        </div>
+
+        <form action="{{ url_for('cinema.fetch_movie') }}" method="POST" class="mb-4">
+            <div class="input-group">
+                <input type="text" class="form-control" name="title" placeholder="Enter movie title" required>
+                <button type="submit" class="btn btn-primary">Fetch Movie</button>
+            </div>
+        </form>
+
+        <!-- Display Stored OMDb Movies -->
+        <h3>Current Stored Screenings</h3>
+        {% if stored_movies %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Year</th>
+                    <th>Genre</th>
+                    <th>Director</th>
+                    <th>Actors</th>
+                    <th>Plot</th>
+                    <th>Poster</th>
+                    <th>IMDB Rating</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movie in stored_movies %}
+                <tr>
+                    <td>{{ movie.title }}</td>
+                    <td>{{ movie.year }}</td>
+                    <td>{{ movie.genre }}</td>
+                    <td>{{ movie.director }}</td>
+                    <td>{{ movie.actors }}</td>
+                    <td>{{ movie.plot | truncate(100, True, '...') }}</td>
+                    <td>
+                        {% if movie.poster %}
+                            <img src="{{ movie.poster }}" alt="{{ movie.title }} Poster" class="img-thumbnail" style="max-width: 100px; height: auto;">
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ movie.imdb_rating }}</td>
+                    <td>
+                        <!-- Delete Screening Form -->
+                        <form action="{{ url_for('cinema.delete_movie', source='omdb', title=movie.title) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this movie?');">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No movies available. Fetch a movie to get started.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+

@@ -1,5 +1,5 @@
 # we run eveything here!
-from flask import Flask, flash, render_template, session, redirect, url_for
+from flask import Flask, abort, flash, render_template, session, redirect, url_for
 from database.init_db import get_db  
 from modules.extensions import mail
 from modules.auth import auth_bp
@@ -61,6 +61,18 @@ def home():
     }).limit(9)  # Fetch 9 most recent movies
 
     return render_template('index.html', movies=list(featured_movies))
+
+@app.route('/not_found')
+def not_found():
+    return "This page doesn't exist.", 404
+
+@app.route('/redirect_me')
+def redirect_me():
+    return redirect(url_for('home'))  # Default status code 302
+
+@app.route('/missing')
+def missing():
+    abort(404)  # Triggers a 404 error
 
 @app.route('/local_spots')
 def local_spots():

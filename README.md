@@ -17,7 +17,7 @@ Flask-Mail: For email-based password reset functionality.
 Bootstrap: For responsive design.
 
 ### Demo:
-For a full walkthrough and demo, visit: [Watch Demo] (https://youtu.be/t1-9XHQUXm4)
+For a full walkthrough and demo, visit: [Watch Demo](https://youtu.be/t1-9XHQUXm4)
 
 ### Vintage Frames Team
 Email: edinburghvintageframes@gmail.com
